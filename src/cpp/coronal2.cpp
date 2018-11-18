@@ -59,7 +59,7 @@ class Explorer : public Action {
   uint64_t *const cnt;
 
 public:
-  Explorer(bool const &full) : cnt(full ? new uint64_t[4] : 0) {
+  Explorer(bool const &full) : cnt(full ? new uint64_t[4] : nullptr) {
     for (Symmetry s : Symmetry::RANGE)
       pre[s] = 0;
   }
@@ -79,7 +79,7 @@ protected:
 
   void dump(std::ostream &out) const {
     uint64_t total_pre;
-    uint64_t total_cnt;
+    uint64_t total_cnt = 0;
 
     out << "Symmetry     Seeds";
     total_pre = 0;
@@ -90,7 +90,7 @@ protected:
     out << "\n-----\n";
 
     for (Symmetry s : Symmetry::RANGE) {
-      out << (char const *)s << '\t' << std::right << std::setw(10) << pre[s];
+      out << (const char*)s << '\t' << std::right << std::setw(10) << pre[s];
       total_pre += pre[s];
       if (cnt) {
         unsigned const w = s.weight();
