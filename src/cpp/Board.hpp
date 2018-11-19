@@ -180,7 +180,7 @@ public:
 
 }; // class Board
 
-std::ostream &operator<<(std::ostream &out, Board const &brd) {
+static std::ostream &operator<<(std::ostream &out, Board const &brd) {
   unsigned const N = brd.N;
   for (unsigned y = N; y-- > 0;) {
     for (unsigned x = 0; x < N; x++) {
@@ -191,7 +191,7 @@ std::ostream &operator<<(std::ostream &out, Board const &brd) {
   return out;
 }
 
-std::ostream &operator<<(std::ostream &out, Board::Placement const &p) {
+static std::ostream &operator<<(std::ostream &out, Board::Placement const &p) {
   out << '(' << p.x << ',' << p.y << ')';
   return out;
 }

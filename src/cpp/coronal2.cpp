@@ -31,28 +31,14 @@
 
 #include <string.h>
 
+#include "action.h"
 #include "Board.hpp"
+#include "filewriter.h"
 #include "Symmetry.hpp"
 
 using namespace queens;
 
 namespace {
-
-class Action {
-protected:
-  Action() {}
-
-public:
-  virtual ~Action() {}
-
-public:
-  void operator()(Board const &brd, Symmetry sym) { this->process(brd, sym); }
-
-protected:
-  virtual void process(Board const &brd, Symmetry sym) = 0;
-  virtual void dump(std::ostream &out) const = 0;
-  friend std::ostream &operator<<(std::ostream &out, Action const &act);
-};
 
 class Explorer : public Action {
   uint64_t pre[4];
@@ -139,8 +125,8 @@ std::ostream &operator<<(std::ostream &out, Action const &act) {
   return out;
 }
 
-Action *parseAction(char const *const arg) {
-  return new Explorer(strcmp(arg, "-x") == 0);
+Action *parseAction(char const *const arg, unsigned N) {
+  return new FileWriter(N);//strcmp(arg, "-x") == 0);
 } // parseAction
 } // namespace
 
@@ -157,7 +143,7 @@ int main(int const argc, char const *const argv[]) {
     return 1;
   }
   std::cout << N << "-Queens Puzzle\n" << std::endl;
-  std::unique_ptr<Action> act(parseAction(argv[1]));
+  std::unique_ptr<Action> act(parseAction(argv[1], N));
 
   /**
    * The number of valid pre-placements in two adjacent columns (rows) is
