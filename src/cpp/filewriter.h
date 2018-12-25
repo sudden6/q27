@@ -9,8 +9,6 @@
 class FileWriter : public Action {
   uint64_t pre[4];
   std::ofstream files[4];
-  // safe until N=28
-  uint8_t data[22] = {0};
 
 public:
   FileWriter(unsigned N);

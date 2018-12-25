@@ -183,8 +183,8 @@ int main(int const argc, char const *const argv[]) {
 #ifdef TRACE
     std::cerr << '(' << wa << ", " << wb << ')' << std::endl;
 #else
-    std::cout << "\rProgress: " << w << '/' << ((N / 2) * (N - 3))
-              << std::flush;
+    std::cout << "Progress: " << w << '/' << ((N / 2) * (N - 3))
+              << std::endl << std::flush;
 #endif
 
     Board::Placement pwa(board.place(0, wa));

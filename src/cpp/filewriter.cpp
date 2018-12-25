@@ -9,7 +9,7 @@ FileWriter::FileWriter(unsigned N)
     for (queens::Symmetry s : queens::Symmetry::RANGE) {
         std::string name = std::string(s);
         pre[s] = 0;
-        files[s].open("N_" + std::to_string(N) + "_" + name + ".dat",
+        files[s].open("N_" + std::to_string(N) + "_" + name + ".dat2",
                       std::ios::binary | std::ios::out | std::ios::trunc);
         if(!files[s].is_open()) {
             std::cout << "Failed to open: " << name << std::endl;
@@ -21,41 +21,41 @@ void FileWriter::process(queens::Board const &brd, queens::Symmetry sym)
 {
     pre[sym]++;
 
-    // horizontal
-    uint64_t h = brd.getBH();
-    data[0] = h >> 3*8;
-    data[1] = h >> 2*8;
-    data[2] = h >> 1*8;
-    data[3] = h >> 0*8;
+    // safe until N=254, 0xFF means empty
+    uint8_t data[8] = {0};
+    brd.getPacked(data);
 
-    // vertical
-    uint64_t v = brd.getBV();
-    data[4] = v >> 3*8;
-    data[5] = v >> 2*8;
-    data[6] = v >> 1*8;
-    data[7] = v >> 0*8;
+    // check if columns A,B and E,F are occupied
+    bool checked = false;
 
-    // up diagonal, only 7 bytes needed
-    uint64_t u = brd.getBU();
-    data[8]  = u >> 6*8;
-    data[9]  = u >> 5*8;
-    data[10] = u >> 4*8;
-    data[11] = u >> 3*8;
-    data[12] = u >> 2*8;
-    data[13] = u >> 1*8;
-    data[14] = u >> 0*8;
+    if(data[0] != 0xFF && data[1] != 0xFF) {
+        bool E = false;
+        bool F = false;
+        for(size_t i = 0; i < 4; i++) {
+            if(data[i] == 0) {
+                E = true;
+            }
+            if(data[i] == 1) {
+                F = true;
+            }
+        }
 
-    // down diagonal, only 7 bytes needed
-    uint64_t d = brd.getBD();
-    data[15] = d >> 6*8;
-    data[16] = d >> 5*8;
-    data[17] = d >> 4*8;
-    data[18] = d >> 3*8;
-    data[19] = d >> 2*8;
-    data[20] = d >> 1*8;
-    data[21] = d >> 0*8;
+        if(data[4] != 0xFF) {
+            E = true;
+        }
 
-    files[sym].write((char*)data, 22);
+        if(data[5] != 0xFF) {
+            F = true;
+        }
+
+        checked = E && F;
+    }
+
+    if(!checked) {
+        std::cout << "Err" << std::endl;
+    }
+
+    files[sym].write((char*)data, 8);
 
 } // process()
 

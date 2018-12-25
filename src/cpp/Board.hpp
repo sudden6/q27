@@ -178,6 +178,27 @@ public:
 
   } // coronal
 
+  void getPacked(uint8_t* buf) const {
+      // check columns
+      buf[0] = board[0] != -1 ? board[0] : 0xFF;            // A column
+      buf[1] = board[1] != -1 ? board[1] : 0xFF;            // B column
+      buf[2] = board[N - 1] != -1 ? board[N - 1] : 0xFF;    // C column
+      buf[3] = board[N - 2] != -1 ? board[N - 2] : 0xFF;    // D column
+
+      // check rows
+
+      // set all to empty
+      for(size_t i = 4; i < 8; i++) {
+          buf[i] = 0xFF;
+      }
+
+      for (size_t i = 2; i < N - 2; i++) {
+          buf[4] = board[i] == 0 ? i : buf[4];              // E row
+          buf[5] = board[i] == 1 ? i : buf[5];              // F row
+          buf[6] = board[i] == (N - 1) ? i : buf[6];        // G row
+          buf[7] = board[i] == (N - 2) ? i : buf[7];        // H row
+      }
+  }
 }; // class Board
 
 static std::ostream &operator<<(std::ostream &out, Board const &brd) {
